@@ -4,10 +4,10 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(
-    name='rltf2',
+    name='rl_tf_2',
     version='0.5',
     description='Setup',
-    author='jw1401',
+    author='Original@jw1401, current@saez1007',
 
     classifiers=[],
     packages=find_packages(),
