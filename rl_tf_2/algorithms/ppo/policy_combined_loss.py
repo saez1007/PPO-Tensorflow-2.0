@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from .models import CategoricalModel
-from utils import logger, log
+from rl_tf_2.utils import logger, log
 from .cfg_ppo import Params
 
 

@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
-from environment import EnvInfo
-from utils import log
+from rl_tf_2.environment import EnvInfo
+from rl_tf_2.utils import log
 
 EPS = 1e-8      # Const to avoid Machine Precission Error
 
