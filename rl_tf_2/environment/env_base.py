@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from collections import deque
 from dataclasses import dataclass
 from mlagents.envs.environment import UnityEnvironment
-from utils import log2logger
+from rl_tf_2.utils import log2logger
 
 
 @dataclass
