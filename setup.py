@@ -4,7 +4,7 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(
-    name='rl_tf_2',
+    name='rltf2',
     version='0.5',
     description='Setup',
     author='jw1401',
