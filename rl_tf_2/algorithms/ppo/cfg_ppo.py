@@ -27,7 +27,7 @@ class ParamsBase:
     
     def __post_init__(self):
 
-        from utils import log2logger
+        from rl_tf_2.utils import log2logger
 
         if self.config_file is not "":                              # If no config file --> use parameters defined in this class
 
