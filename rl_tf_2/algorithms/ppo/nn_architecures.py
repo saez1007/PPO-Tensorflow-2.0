@@ -32,7 +32,13 @@ def register(name):
     return _thunk
 
 
-def mlp(hidden_sizes= (32, 32), output_size= 1, activation= 'relu', activation_output= None, kernel_initalizer= 'glorot_uniform', name= 'MLP'):
+def mlp(hidden_sizes= (32, 32),
+        output_size= 1,
+        activation= 'relu',
+        activation_output= None,
+        kernel_initalizer= 'glorot_uniform',
+        name= 'MLP',
+        lstm = True):
     """
         MLP - Multilayer Perceptron
         ---------------------------
@@ -46,7 +52,10 @@ def mlp(hidden_sizes= (32, 32), output_size= 1, activation= 'relu', activation_o
 
     """
     model = tf.keras.Sequential(name= name)
-    
+
+    if lstm:
+        model.add(tf.keras.layers.LSTM(5, return_sequences=False))
+    model.add(tf.keras.layers.Flatten())
     for h in hidden_sizes:
         model.add(tf.keras.layers.Dense(units= h, activation= activation, name= name, kernel_initializer= kernel_initalizer, bias_initializer= 'zeros'))
     

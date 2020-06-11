@@ -39,7 +39,7 @@ class PolicyCombinedLoss(PolicyBase):
         self.num_envs = num_envs
         self.nbatch = self.num_envs * self.params.trainer.steps_per_epoch               # ==> HORIZON = steps per epoch
         self.nbatch_train = self.nbatch // self.params.trainer.num_mini_batches
-        assert self.nbatch % self.params.trainer.num_mini_batches == 0
+        # assert self.nbatch % self.params.trainer.num_mini_batches == 0
 
     def update(self, rollouts):
         """
@@ -73,7 +73,7 @@ class PolicyCombinedLoss(PolicyBase):
         """
         np.random.shuffle(inds)
         means = []
-
+        vec_obses = vec_obses.reshape(250, 11, 5)
         for start in range(0, self.nbatch, self.nbatch_train):
 
             end = start + self.nbatch_train
@@ -134,17 +134,20 @@ class PolicyCombinedLoss(PolicyBase):
     # @tf.function
     def _train_one_step(self, vec_obs, vis_obs, act, adv, logp_old, returns):
 
-        with tf.GradientTape() as tape:
-            _losses = self._loss(vec_obs, vis_obs, logp_old, act, adv, returns)
+        _losses = self._loss(vec_obs, vis_obs, logp_old, act, adv, returns)
             
         trainable_variables = self.model.trainable_variables                            # take all trainable variables into account
 
-        grads = tape.gradient(_losses['total_loss'], trainable_variables)               # differentiate --> dError/dVariables --> 
-                                                                                        # dTotal_Loss/dTrainable_Variables used 
-                                                                                        # for calculating gradients for backprop
 
-        grads, grad_norm = tf.clip_by_global_norm(grads, self.clip_grads)               # clip gradients for slight updates
+        for loss, int_ini, int_end in zip(['pi_loss', 'v_loss'], [None,int(len(trainable_variables)/2)], [int(len(trainable_variables)/2),None]):
 
-        self.optimizer.apply_gradients(zip(grads, trainable_variables))                 # Backprop gradients through network
+            with tf.GradientTape() as tape:
+                _losses = self._loss(vec_obs, vis_obs, logp_old, act, adv, returns)
+            grads = tape.gradient(_losses[loss], trainable_variables[int_ini:int_end])               # differentiate --> dError/dVariables -->
+                                                                                            # dTotal_Loss/dTrainable_Variables used
+                                                                                            # for calculating gradients for backprop
+            grads, grad_norm = tf.clip_by_global_norm(grads, self.clip_grads)               # clip gradients for slight updates
+
+            self.optimizer.apply_gradients(zip(grads, trainable_variables[int_ini:int_end]))                 # Backprop gradients through network
 
         return _losses
